@@ -3,14 +3,14 @@ package co.com.realistic.app.employee.employeems.infrastructure.soap.integration
 import co.com.realistic.app.employee.employeems.core.domain.employee.Employee;
 import co.com.realistic.app.employee.employeems.core.domain.employee.EmployeeInterestingAttributes;
 import co.com.realistic.app.employee.employeems.core.domain.employee.repository.EmployeeRepository;
-import soap.SoapAddEmployeeRequest;
-import soap.SoapAddEmployeeResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
+import soap.SoapAddEmployeeRequest;
+import soap.SoapAddEmployeeResponse;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -75,14 +75,26 @@ public class SoapClient implements EmployeeRepository {
                 Mono.just(
                         EmployeeInterestingAttributes
                                 .builder()
-                                .birthDateYear(birthDate.getYear())
-                                .birthDateMonth(birthDate.getMonthValue())
-                                .birthDateDay(birthDate.getDayOfMonth())
-                                .entailmentDateDay(entailmentDate.getDayOfMonth())
-                                .entailmentDateMonth(entailmentDate.getMonthValue())
-                                .entailmentDateYear(entailmentDate.getYear())
+                                .birthDateYear(getYear(birthDate))
+                                .birthDateMonth(getMonth(birthDate))
+                                .birthDateDay(getDay(birthDate))
+                                .entailmentDateDay(getDay(entailmentDate))
+                                .entailmentDateMonth(getMonth(entailmentDate))
+                                .entailmentDateYear(getYear(entailmentDate))
                                 .build()
                 );
+    }
+
+    private int getYear(LocalDate date) {
+        return NOW.getYear() - date.getYear();
+    }
+
+    private int getMonth(LocalDate date) {
+        return NOW.getMonthValue() - date.getMonthValue();
+    }
+
+    private int getDay(LocalDate date) {
+        return NOW.getDayOfMonth() - date.getDayOfMonth();
     }
 
     private String dateToString(LocalDate localDate) {
