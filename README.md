@@ -59,7 +59,8 @@ curl --request POST \
       </emp:addEmployeeRequest>
    </soapenv:Body>
 </soapenv:Envelope>'
-
+```
+```
 curl --request POST \
   --url http://localhost:8080/ws \
   --header 'Content-Type: text/xml' \
@@ -74,7 +75,6 @@ curl --request POST \
       </emp:getEmployeeRequest>
    </soapenv:Body>
 </soapenv:Envelope>'
-
 ```
 
 ### Sample Response (SOAP)
@@ -106,7 +106,8 @@ curl --request POST \
       </ns2:addEmployeeResponse>
    </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
-
+```
+```
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
    <SOAP-ENV:Header/>
    <SOAP-ENV:Body>
