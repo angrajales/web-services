@@ -19,6 +19,9 @@ repositories {
 }
 
 dependencies {
+  compile('javax.xml.bind:jaxb-api:2.3.0')
+compile('javax.activation:activation:1.1')
+compile('org.glassfish.jaxb:jaxb-runtime:2.3.0')
     implementation 'wsdl4j:wsdl4j'
     implementation('org.springframework.boot:spring-boot-starter-web-services') {
         exclude group: "org.springframework.boot", module: 'spring-boot-starter-web'

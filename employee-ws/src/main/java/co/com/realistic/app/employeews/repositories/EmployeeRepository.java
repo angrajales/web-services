@@ -26,7 +26,7 @@ public interface EmployeeRepository extends CrudRepository<Employee, String> {
             "entailment_date, " +
             "role, " +
             "salary) VALUES " +
-            "(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)", nativeQuery = true )
+            "(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)", nativeQuery = true)
     void addEmployee(String name,
                      String lastname,
                      String documentType,
@@ -39,6 +39,13 @@ public interface EmployeeRepository extends CrudRepository<Employee, String> {
             ScriptException,
             RecoverableDataAccessException,
             NonTransientDataAccessException;
-    @Query(value = "SELECT * FROM tb_employees WHERE document_number=$1", nativeQuery = true)
-    Employee findByDocumentNumber(String documentNumber);
+
+    @Query(value = "SELECT * FROM tb_employees WHERE document_number=?1 AND document_type=?2", nativeQuery = true)
+    Employee findByDocumentNumber(String documentNumber, String documentType)
+            throws TransientDataAccessException,
+            ScriptException,
+            RecoverableDataAccessException,
+            NonTransientDataAccessException;
+
+    ;
 }

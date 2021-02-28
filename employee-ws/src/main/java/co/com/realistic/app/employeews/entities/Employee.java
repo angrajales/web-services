@@ -2,6 +2,7 @@ package co.com.realistic.app.employeews.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class Employee {
     @Id
     @Column(name = "document_number")

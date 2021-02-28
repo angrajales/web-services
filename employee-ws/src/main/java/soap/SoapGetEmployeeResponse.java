@@ -1,22 +1,24 @@
 package soap;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-        "employee"
+        "employee",
+        "responseStatus"
 })
-@XmlRootElement(name = "addEmployeeRequest")
+@XmlRootElement(name = "employeeInformation")
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-public class SoapAddEmployeeRequest {
-    @XmlElement(required = true)
+@Builder(toBuilder = true)
+public class SoapGetEmployeeResponse {
     private SoapEmployee employee;
+    @XmlElement(required = true)
+    private SoapResponseStatus responseStatus;
 }

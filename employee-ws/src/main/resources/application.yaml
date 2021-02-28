@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/appdb
+    url: jdbc:mysql://127.0.0.1:3306/appdb
     username: rds
-    password:
+    password: 
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: ALWAYS
   jpa:

@@ -1,18 +1,21 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.realistic-example.org/employee-ws"
            targetNamespace="http://www.realistic-example.org/employee-ws"
            elementFormDefault="qualified">
     <xs:element name="addEmployeeRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:sequence>
-                    <xs:element name="name" type="xs:string"></xs:element>
-                    <xs:element name="lastname" type="xs:string"></xs:element>
-                    <xs:element name="documentType" type="xs:string"></xs:element>
-                    <xs:element name="documentNumber" type="xs:string"></xs:element>
-                    <xs:element name="birthDate" type="xs:string"></xs:element>
-                    <xs:element name="entailmentDate" type="xs:string"></xs:element>
-                    <xs:element name="role" type="xs:string"></xs:element>
-                    <xs:element name="salary" type="xs:double"></xs:element>
+                    <xs:element name="employee" type="tns:employee"/>
+                </xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getEmployeeRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:sequence>
+                    <xs:element name="identification" type="tns:identification"/>
                 </xs:sequence>
             </xs:sequence>
         </xs:complexType>
@@ -20,11 +23,73 @@
     <xs:element name="addEmployeeResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="status" type="xs:boolean"></xs:element>
-                <xs:element name="message" type="xs:string"></xs:element>
-                <xs:element name="entailmentDate" type="xs:string"></xs:element>
-                <xs:element name="birthDate" type="xs:string"></xs:element>
+                <xs:element name="interestingEmployeeInformation" type="tns:interestingEmployeeInformation"/>
+                <xs:element name="responseStatus" type="tns:responseStatus"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+    <xs:element name="getEmployeeResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="employeeInformation" type="tns:employee"/>
+                <xs:element name="responseStatus" type="tns:responseStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="employee">
+        <xs:sequence>
+            <xs:element name="identification" type="tns:identification"/>
+            <xs:element name="personalInformation" type="tns:personalInformation"/>
+            <xs:element name="additionalInformation" type="tns:additionalInformation"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="identification">
+        <xs:sequence>
+            <xs:element name="documentType" type="xs:string"/>
+            <xs:element name="documentNumber" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="additionalInformation">
+        <xs:sequence>
+            <xs:element name="role" type="xs:string"/>
+            <xs:element name="salary" type="xs:double"/>
+            <xs:element name="entailmentDate" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="personalInformation">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="lastname" type="xs:string"/>
+            <xs:element name="birthDate" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="interestingEmployeeInformation">
+        <xs:sequence>
+            <xs:element name="entailmentInformation" type="tns:entailmentInterestingInformation"/>
+            <xs:element name="birthDateInformation" type="tns:birthDateInterestingInformation"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="entailmentInterestingInformation">
+        <xs:sequence>
+            <xs:element name="entailmentDate" type="tns:commonInterestingInformation"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="birthDateInterestingInformation">
+        <xs:sequence>
+            <xs:element name="birthDate" type="tns:commonInterestingInformation"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="commonInterestingInformation">
+        <xs:sequence>
+            <xs:element name="day" type="xs:int"/>
+            <xs:element name="month" type="xs:int"/>
+            <xs:element name="year" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="responseStatus">
+        <xs:sequence>
+            <xs:element name="status" type="xs:boolean"/>
+            <xs:element name="message" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>

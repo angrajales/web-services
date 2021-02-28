@@ -5,17 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-        "success",
-        "message",
-        "entailmentDate",
-        "birthDate"
+        "interestingEmployeeInformation",
+        "responseStatus"
 })
 @XmlRootElement(name = "addEmployeeResponse")
 @AllArgsConstructor
@@ -23,8 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 @Getter
 @Builder(toBuilder = true)
 public class SoapAddEmployeeResponse {
-    private boolean success;
-    private String message;
-    private String entailmentDate;
-    private String birthDate;
+    private SoapInterestingEmployeeInformation interestingEmployeeInformation;
+    @XmlElement(required = true)
+    private SoapResponseStatus responseStatus;
+
 }

@@ -20,7 +20,9 @@ public class EmployeeEntryPoint implements WebFluxConfigurer {
     @Bean
     public RouterFunction<ServerResponse> routeEmployee() {
         return route()
-                .GET("/employees/create", handler::addEmployee)
+                .GET("/employees/create",
+                        handler::addEmployee)
+                .GET("/employees/get", handler::getEmployee)
                 .build();
     }
 }

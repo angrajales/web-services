@@ -9,33 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
-import soap.SoapAddEmployeeRequest;
-import soap.SoapAddEmployeeResponse;
+import soap.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
 public class SoapClient implements EmployeeRepository {
     private final WebClient webClient;
     private final String soapServiceUrl;
-    private static final String ERROR_MESSAGE = "Error creating the given employee";
+    private static final String ERROR_MESSAGE = "Error doing the soap request";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final LocalDate NOW = LocalDate.now();
 
     public Mono<EmployeeInterestingAttributes> addEmployee(Employee employee) {
-        Mono<SoapAddEmployeeRequest> soapAddEmployeeRequest = Mono.just(SoapAddEmployeeRequest
-                .builder()
-                .name(employee.getName())
-                .lastname(employee.getLastname())
-                .documentType(employee.getDocumentType())
-                .documentNumber(employee.getDocumentNumber())
-                .birthDate(dateToString(employee.getBirthDate()))
-                .entailmentDate(dateToString(employee.getEntailmentDate()))
-                .role(employee.getRole())
-                .salary(employee.getSalary())
-                .build());
+        Mono<SoapAddEmployeeRequest> soapAddEmployeeRequest = Mono.just(getAddEmployeeRequest(employee));
         return webClient
                 .post()
                 .uri(soapServiceUrl)
@@ -54,33 +44,122 @@ public class SoapClient implements EmployeeRepository {
                 ).bodyToMono(SoapAddEmployeeResponse.class)
                 .log()
                 .doOnSuccess((SoapAddEmployeeResponse response) -> {
-                    log.info("Success " + response.isSuccess());
-                    log.info("EntailmentDate " + response.getEntailmentDate());
-                    log.info("BirthDate " + response.getBirthDate());
-                    log.info("Message " + response.getMessage());
+                    log.info("Success " + response.getResponseStatus().isStatus());
+                    log.info("Message " + response.getResponseStatus().getMessage());
                 })
                 .log()
                 .flatMap(this::convertToInterestingAttributesResponse);
     }
 
+    public Mono<Employee> getEmployee(Map<String, String> attributes) {
+        Mono<SoapGetEmployeeRequest> soapAddEmployeeRequest = Mono.just(getEmployeeRequest(attributes));
+        return webClient
+                .post()
+                .uri(soapServiceUrl)
+                .header("SOAP")
+                .body(soapAddEmployeeRequest, SoapGetEmployeeRequest.class)
+                .retrieve()
+                .onStatus(
+                        HttpStatus::isError,
+                        clientResponse ->
+                                clientResponse.bodyToMono(String.class)
+                                        .flatMap(errorResponseBody ->
+                                                Mono.error(new ResponseStatusException(
+                                                        clientResponse.statusCode(),
+                                                        errorResponseBody
+                                                )))
+                ).bodyToMono(SoapGetEmployeeResponse.class)
+                .log()
+                .doOnSuccess((SoapGetEmployeeResponse response) -> {
+                    log.info("Success " + response.getResponseStatus().isStatus());
+                    log.info("Message " + response.getResponseStatus().getMessage());
+                })
+                .log()
+                .flatMap(this::convertToEmployee);
+    }
+
+    private SoapGetEmployeeRequest getEmployeeRequest(Map<String, String> attributes) {
+        return SoapGetEmployeeRequest
+                .builder()
+                .identification(SoapEmployeeIdentification
+                        .builder()
+                        .documentType(attributes.get("document_type"))
+                        .documentNumber(attributes.get("document_number"))
+                        .build())
+                .build();
+
+    }
+
+    private SoapAddEmployeeRequest getAddEmployeeRequest(Employee employee) {
+        return SoapAddEmployeeRequest
+                .builder()
+                .employee(SoapEmployee
+                        .builder()
+                        .personalInformation(SoapPersonalInformation
+                                .builder()
+                                .name(employee.getName())
+                                .lastname(employee.getLastname())
+                                .birthDate(dateToString(employee.getBirthDate()))
+                                .build())
+                        .additionalInformation(SoapAdditionalInformation
+                                .builder()
+                                .role(employee.getRole())
+                                .salary(employee.getSalary())
+                                .entailmentDate(dateToString(employee.getEntailmentDate()))
+                                .build())
+                        .identification(SoapEmployeeIdentification
+                                .builder()
+                                .documentNumber(employee.getDocumentNumber())
+                                .documentType(employee.getDocumentType())
+                                .build())
+                        .build())
+                .build();
+    }
+
+
+    private Mono<Employee> convertToEmployee(SoapGetEmployeeResponse response) {
+        if (!response.getResponseStatus().isStatus()) {
+            throw new RuntimeException(ERROR_MESSAGE);
+        }
+        SoapPersonalInformation personalInfo = response.getEmployee().getPersonalInformation();
+        SoapAdditionalInformation addInfo = response.getEmployee().getAdditionalInformation();
+        SoapEmployeeIdentification identification = response.getEmployee().getIdentification();
+        return Mono.just(Employee
+                .builder()
+                .birthDate(stringToDate(personalInfo.getBirthDate()))
+                .name(personalInfo.getName())
+                .lastname(personalInfo.getLastname())
+                .documentNumber(identification.getDocumentNumber())
+                .documentType(identification.getDocumentType())
+                .role(addInfo.getRole())
+                .salary(addInfo.getSalary())
+                .entailmentDate(stringToDate(addInfo.getEntailmentDate()))
+                .build());
+    }
 
     private Mono<EmployeeInterestingAttributes> convertToInterestingAttributesResponse(
             SoapAddEmployeeResponse response) {
-        if (!response.isSuccess()) {
+        if (!response.getResponseStatus().isStatus()) {
             throw new RuntimeException(ERROR_MESSAGE);
         }
-        LocalDate birthDate = stringToDate(response.getBirthDate());
-        LocalDate entailmentDate = stringToDate(response.getEntailmentDate());
+        SoapCommonInterestingInformation birthDate = response
+                .getInterestingEmployeeInformation()
+                .getBirthDateInformation()
+                .getBirthDate();
+        SoapCommonInterestingInformation entailmentDate = response
+                .getInterestingEmployeeInformation()
+                .getEntailmentInformation()
+                .getEntailmentDate();
         return
                 Mono.just(
                         EmployeeInterestingAttributes
                                 .builder()
-                                .birthDateYear(getYear(birthDate))
-                                .birthDateMonth(getMonth(birthDate))
-                                .birthDateDay(getDay(birthDate))
-                                .entailmentDateDay(getDay(entailmentDate))
-                                .entailmentDateMonth(getMonth(entailmentDate))
-                                .entailmentDateYear(getYear(entailmentDate))
+                                .birthDateYear(birthDate.getYear())
+                                .birthDateMonth(birthDate.getMonth())
+                                .birthDateDay(birthDate.getDay())
+                                .entailmentDateDay(entailmentDate.getDay())
+                                .entailmentDateMonth(entailmentDate.getMonth())
+                                .entailmentDateYear(entailmentDate.getYear())
                                 .build()
                 );
     }

@@ -1,5 +1,6 @@
 package soap;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,14 +10,14 @@ import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-        "employee"
+        "identification"
 })
-@XmlRootElement(name = "addEmployeeRequest")
+@XmlRootElement(name = "getEmployeeRequest")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class SoapAddEmployeeRequest {
+public class SoapGetEmployeeRequest {
     @XmlElement(required = true)
-    private SoapEmployee employee;
+    private SoapEmployeeIdentification identification;
 }
