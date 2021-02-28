@@ -28,9 +28,10 @@ cd web-services/employee-ms/
 ```
 curl --request GET \
   --url 'http://localhost:8081/employees/create?name=Juan&lastname=Opel&document_type=CC&document_number=177777777&entailment_date=2015-01-20&birth_date=1988-01-01&role=Director&salary=7777777'
-  curl --location --request GET 'http://localhost:8081/employees/get?document_number=123461617&document_type=CC'
 ```
-
+```
+curl --location --request GET 'http://localhost:8081/employees/get?document_number=123461617&document_type=CC'
+```
 ## Test the application (SOAP)
 
 ```
