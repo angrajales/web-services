@@ -28,6 +28,7 @@ cd web-services/employee-ms/
 ```
 curl --request GET \
   --url 'http://localhost:8081/employees/create?name=Juan&lastname=Opel&document_type=CC&document_number=177777777&entailment_date=2015-01-20&birth_date=1988-01-01&role=Director&salary=7777777'
+  curl --location --request GET 'http://localhost:8081/employees/get?document_number=123461617&document_type=CC'
 ```
 
 ## Test the application (SOAP)
@@ -203,7 +204,39 @@ curl --request POST \
         }
     ]
 }
-
+```
+```
+{
+    "data": [
+        {
+            "metadata": {
+                "id": "08fdc6b5-98ad-459d-b974-ab95016df466",
+                "source": "/get",
+                "date": "2021-02-28 02:29:36"
+            },
+            "response": {
+                "employee": {
+                    "name": "Anderson",
+                    "lastname": "Grajales",
+                    "documentType": "CC",
+                    "documentNumber": "123461617",
+                    "birthDate": [
+                        1992,
+                        1,
+                        2
+                    ],
+                    "entailmentDate": [
+                        2012,
+                        1,
+                        1
+                    ],
+                    "role": "Director",
+                    "salary": 7000000.0
+                }
+            }
+        }
+    ]
+}
 ```
 ### Sample Error (REST)
 ```
