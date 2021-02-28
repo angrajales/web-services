@@ -183,13 +183,27 @@ curl --request POST \
 ### Sample Response (REST)
 ```
 {
-  "birthDateDay": 1,
-  "birthDateMonth": 1,
-  "birthDateYear": 1988,
-  "entailmentDateDay": 20,
-  "entailmentDateMonth": 1,
-  "entailmentDateYear": 2015
+    "data": [
+        {
+            "metadata": {
+                "id": "3c1c9351-eeb9-40d0-b963-b1d26be3ecba",
+                "source": "/create",
+                "date": "2021-02-28 02:07:11"
+            },
+            "response": {
+                "employee": {
+                    "birthDateDay": 27,
+                    "birthDateMonth": 1,
+                    "birthDateYear": 29,
+                    "entailmentDateDay": 27,
+                    "entailmentDateMonth": 1,
+                    "entailmentDateYear": 9
+                }
+            }
+        }
+    ]
 }
+
 ```
 ### Sample Error (REST)
 ```
