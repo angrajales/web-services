@@ -36,54 +36,145 @@ curl --request GET \
 curl --request POST \
   --url http://localhost:8080/ws \
   --header 'Content-Type: text/xml' \
-  --data '<?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:emp="http://www.realistic-example.org/employee-ws">
-   <SOAP-ENV:Header />
-   <SOAP-ENV:Body>
+  --data '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:emp="http://www.realistic-example.org/employee-ws">
+   <soapenv:Header/>
+   <soapenv:Body>
       <emp:addEmployeeRequest>
-         <emp:name>Juan</emp:name>
-         <emp:lastname>Opel</emp:lastname>
-         <emp:documentType>CC</emp:documentType>
-         <emp:documentNumber>1234526777</emp:documentNumber>
-         <emp:birthDate>1988-01-01</emp:birthDate>
-         <emp:entailmentDate>2015-01-20</emp:entailmentDate>
-         <emp:role>Director</emp:role>
-         <emp:salary>1.23456789E8</emp:salary>
+         <emp:employee>
+            <emp:identification>
+               <emp:documentType>CC</emp:documentType>
+               <emp:documentNumber>123461617</emp:documentNumber>
+            </emp:identification>
+            <emp:personalInformation>
+               <emp:name>Anderson</emp:name>
+               <emp:lastname>Grajales</emp:lastname>
+               <emp:birthDate>1992-01-02</emp:birthDate>
+            </emp:personalInformation>
+            <emp:additionalInformation>
+               <emp:role>Director</emp:role>
+               <emp:salary>7000000</emp:salary>
+               <emp:entailmentDate>2012-01-01</emp:entailmentDate>
+            </emp:additionalInformation>
+         </emp:employee>
       </emp:addEmployeeRequest>
-   </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>'
+   </soapenv:Body>
+</soapenv:Envelope>'
+
+curl --request POST \
+  --url http://localhost:8080/ws \
+  --header 'Content-Type: text/xml' \
+  --data '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:emp="http://www.realistic-example.org/employee-ws">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <emp:getEmployeeRequest>
+         <emp:identification>
+            <emp:documentType>CC</emp:documentType>
+            <emp:documentNumber>123461616</emp:documentNumber>
+         </emp:identification>
+      </emp:getEmployeeRequest>
+   </soapenv:Body>
+</soapenv:Envelope>'
+
 ```
 
 ### Sample Response (SOAP)
 ```
-<SOAP-ENV:Envelope
-  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-  <SOAP-ENV:Header/>
-  <SOAP-ENV:Body>
-    <ns2:addEmployeeResponse
-      xmlns:ns2="http://www.realistic-example.org/employee-ws">
-      <ns2:success>true</ns2:success>
-      <ns2:message>Employee added successfully</ns2:message>
-      <ns2:entailmentDate>2015-01-20</ns2:entailmentDate>
-      <ns2:birthDate>1988-01-01</ns2:birthDate>
-    </ns2:addEmployeeResponse>
-  </SOAP-ENV:Body>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns2:addEmployeeResponse xmlns:ns2="http://www.realistic-example.org/employee-ws">
+         <ns2:interestingEmployeeInformation>
+            <ns2:entailmentInformation>
+               <ns2:entailmentDate>
+                  <ns2:day>27</ns2:day>
+                  <ns2:month>1</ns2:month>
+                  <ns2:year>9</ns2:year>
+               </ns2:entailmentDate>
+            </ns2:entailmentInformation>
+            <ns2:birthDateInformation>
+               <ns2:birthDate>
+                  <ns2:day>26</ns2:day>
+                  <ns2:month>1</ns2:month>
+                  <ns2:year>29</ns2:year>
+               </ns2:birthDate>
+            </ns2:birthDateInformation>
+         </ns2:interestingEmployeeInformation>
+         <ns2:responseStatus>
+            <ns2:status>true</ns2:status>
+            <ns2:message>Employee added successfully</ns2:message>
+         </ns2:responseStatus>
+      </ns2:addEmployeeResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns2:employeeInformation xmlns:ns2="http://www.realistic-example.org/employee-ws">
+         <ns2:employee>
+            <ns2:identification>
+               <ns2:documentType>CC</ns2:documentType>
+               <ns2:documentNumber>123461616</ns2:documentNumber>
+            </ns2:identification>
+            <ns2:personalInformation>
+               <ns2:name>Anderson</ns2:name>
+               <ns2:lastname>Grajales</ns2:lastname>
+               <ns2:birthDate>1992-01-02</ns2:birthDate>
+            </ns2:personalInformation>
+            <ns2:additionalInformation>
+               <ns2:role>Director</ns2:role>
+               <ns2:salary>7000000.0</ns2:salary>
+               <ns2:entailmentDate>2012-01-01</ns2:entailmentDate>
+            </ns2:additionalInformation>
+         </ns2:employee>
+         <ns2:responseStatus>
+            <ns2:status>true</ns2:status>
+            <ns2:message>Employee found successfully</ns2:message>
+         </ns2:responseStatus>
+      </ns2:employeeInformation>
+   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
 ### Sample Error (SOAP)
 ```
-<SOAP-ENV:Envelope
-  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-  <SOAP-ENV:Header/>
-  <SOAP-ENV:Body>
-    <ns2:addEmployeeResponse
-      xmlns:ns2="http://www.realistic-example.org/employee-ws">
-      <ns2:success>false</ns2:success>
-      <ns2:message>Employee cannot be added</ns2:message>
-      <ns2:entailmentDate>2015-01-20</ns2:entailmentDate>
-      <ns2:birthDate>1988-01-01</ns2:birthDate>
-    </ns2:addEmployeeResponse>
-  </SOAP-ENV:Body>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns2:addEmployeeResponse xmlns:ns2="http://www.realistic-example.org/employee-ws">
+         <ns2:interestingEmployeeInformation>
+            <ns2:entailmentInformation>
+               <ns2:entailmentDate>
+                  <ns2:day>27</ns2:day>
+                  <ns2:month>1</ns2:month>
+                  <ns2:year>9</ns2:year>
+               </ns2:entailmentDate>
+            </ns2:entailmentInformation>
+            <ns2:birthDateInformation>
+               <ns2:birthDate>
+                  <ns2:day>26</ns2:day>
+                  <ns2:month>1</ns2:month>
+                  <ns2:year>29</ns2:year>
+               </ns2:birthDate>
+            </ns2:birthDateInformation>
+         </ns2:interestingEmployeeInformation>
+         <ns2:responseStatus>
+            <ns2:status>false</ns2:status>
+            <ns2:message>could not execute statement</ns2:message>
+         </ns2:responseStatus>
+      </ns2:addEmployeeResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns2:employeeInformation xmlns:ns2="http://www.realistic-example.org/employee-ws">
+         <ns2:responseStatus>
+            <ns2:status>false</ns2:status>
+            <ns2:message>The employee does not exists</ns2:message>
+         </ns2:responseStatus>
+      </ns2:employeeInformation>
+   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
 
