@@ -242,10 +242,21 @@ curl --request POST \
 ### Sample Error (REST)
 ```
 {
-  "status": "Employee not created",
-  "message": "The employee couldn't be created",
-  "reason": "Error creating an employee",
-  "code": "CC001"
+    "errors": [
+        {
+            "metadata": {
+                "id": "6167f88c-d4b1-4a4a-b0da-fb9f60809caa",
+                "source": "/get",
+                "date": "2021-02-28 02:31:36"
+            },
+            "error": {
+                "status": "Operation not executed",
+                "message": "The operation could not be executed",
+                "reason": "Error trying to execute the request",
+                "code": "CC001"
+            }
+        }
+    ]
 }
 ```
 <br/>
